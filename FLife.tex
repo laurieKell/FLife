@@ -1,0 +1,359 @@
+%http://www.methodsinecologyandevolution.org/view/0/authorGuidelines.html
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Laurie Kell},
+            pdftitle={Simulation of fish populations from life history using the FLife R package},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+
+\usepackage[authoryear]{natbib}
+\usepackage{lineno}
+
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{FLife}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Laurie Kell (Sea++); Ernesto Jardim (EC JRC); Coilin Minto (GMIT); Iago Mosqueira (EC JRC); Alex Tidd (GMIT)}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{27 January, 2016}
+
+\usepackage{float}
+\usepackage{booktabs}
+
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+\begin{document}
+\maketitle
+
+\section*{Outline}
+
+\begin{itemize}
+\item Empirical relationships between life history invariants
+\begin{itemize}
+\item \textbf{Fishbase} dataset with 5 habitat groups showing relationships between growth parameters and maturity
+\item \textbf{Filling in holes} using \textit{lhPar} 
+\end{itemize}    
+\item Functional forms 
+\begin{itemize}
+    \item \textbf{Biology} growth and maturity 
+	\item \textbf{Gislason} relationship between M and k and length
+	\item \textbf{Lorenzen} relationship between M and mass-at-age
+	\item \textbf{Fishing Mortality} selectivity 
+\end{itemize}    
+\item Equilibrium Dynamics 
+\begin{itemize}
+	\item \textbf{lhEql} Production function   
+	\item \textbf{Stock} recruitment relationship
+\end{itemize}    
+\item \textbf{leslie} Leslie matrix 
+\item Elasticity Analysis 
+\item Dynamics 
+\begin{itemize}
+   \item \textbf{fwd} 
+   \item \textbf{noise}
+   \item \textbf{Resonant cohort effects}
+\end{itemize}    
+\item Density Dependence 
+\begin{itemize}
+	\item \textbf{SRR}    
+	\item \textbf{M}    
+    \item \textbf{Growth}  
+\end{itemize}    
+\item Indicators
+\begin{itemize}
+	\item \textbf{lopt} ...
+\end{itemize}
+\item Estimators
+\begin{itemize}
+	\item \textbf{priors}
+\end{itemize}
+\item Feedback control
+\begin{itemize}
+	\item \textbf{hcr P}
+	\item \textbf{hcr D}
+\end{itemize}
+
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+%\section*{Abstract}\label{abstract}
+\newpage
+
+
+
+\newpage
+\section{Introduction}\label{introduction}
+
+FLife is a package for modelling fish stocks based on life history theory, it is part of the FLR \citep{kell2007flr} which is designed to build simulation models representing alternative hypotheses about stock and fishery dynamics.
+
+Scientific fisheries management frameworks rely upon an description of the characteristics of a 'stock' so that its biological reaction to being exploited can be rationally predicted and the predictions tested. The adoption of the Precautionary Approach to fisheries management \citep[PA,][]{garcia1996precautionary} requires a formal consideration of uncertainty. An important principle of the approach is that the level of precaution should increase as uncertainty increases, e.g. from data rich to poor situations., which is often made on the availability of catch and effort data. This obscures the fact, however, that considerable uncertainty often exists about biological processes such as natural mortality, recruitment and the population structure of commercially important fish populations. Conversely even when data are limited, empirical studies have shown that life history parameters, such as age at first reproduction, natural mortality, and growth rate are strongly correlated. Therefore biological knowledge is important both for evaluating the robustness of advice obtained from data-rich stock assessments and in allowing general rules, for example about choice of indicators stock status, i.e. is biomass too low or fishing pressure too high, to be derived and transferable to all populations. 
+
+Expand on 
+\begin{itemize}
+\tightlist
+\item Life history traits useful in population ecology, fisheries management and conservation.
+\item Life history invariants help explaining population responses to management regimes
+\item Understanding biological processes is required if we are to develop robust management advice
+\item Life history theory can be used to generate simulation models 
+\item Limitation of models, and the importance of feedback control
+\item FLR \citep{kell2007flr}
+\end{itemize}
+
+\newpage
+\section{Methods}
+
+\subsection{FLR}\label{flr}
+
+\begin{itemize}
+\tightlist
+  \item Flow of processes
+\end{itemize}
+
+\subsection{Life history invariants}\label{lh}
+
+Empirical relationships between $L_{\infty}$ and $k$, $t_{0}$, $L_{50}$
+
+$k =3.15L_{\infty}^{-0.64}$
+ \citep{gislason2008does}
+
+$t_0=e^{-0.3922-0.2752log(L_{\infty})-1.038log(k)}$
+ \citep{pauly1979gill} 
+ 
+$L_{50}=0.72L_{\infty}^{0.93}$
+\citep{beverton1992patterns}
+
+\subsection{Curves}
+
+\subsubsection{Growth}
+
+There are various models to describe growth, maturation and natural mortality and the relationships between them. 
+ 
+Here we model growth by applying \citep{vonbert1957quantitative}   
+ 
+\begin{equation} L_t = L_{\infty} - L_{\infty}exp(-kt) \end{equation} 
+ 
+where $L_{\infty}$ is the asymptotic length attainable, $K$ is the rate at which the rate of growth in length declines as length approaches $L_{\infty}$, and $t_{0}$ is the time at 
+which an individual is of zero length. 
+ 
+Mass-at-age can be derived from length using a scaling exponent ($a$) and the condition factor ($b$). 
+ 
+\begin{equation} W_t = a \times W_t^b \end{equation} 
+ 
+\subsubsection{Maturity}
+
+Maturity ($Q$) can be derived as in \citet{williams2003implications} from the theoretical relationship between M, K, and age at maturity $a_{Q}$  
+based on the dimensionless ratio of length at maturity to asymptotic length \citep{beverton1992patterns}.  
+ 
+\begin{equation} 
+a_{Q}=a \times L_{\infty}-b 
+\end{equation}  
+
+\subsubsection{Natural mortality}
+
+Varying by length
+
+$M_L=1.73L^{-1.61}L_{\infty}^{1.44}k$
+\citep{gislason2008coexistence}
+
+or weight
+
+$M_W=3W^{-0.288}$
+\citep{lorenzen2002density}
+
+\subsubsection{Selection patterns}
+
+\[
+    \alpha(x)=\left\{
+                \begin{array}{ll}
+                  a_{max}2^{-[(x-a_1)/\sigma_{L}]^2}\\
+                  a_{max}\\
+                  a_{max}2^{-[(x-(a_1+a_2))/\sigma_{R}]^2}\\
+                \end{array}
+              \right.
+  \]
+  
+http://www.afma.gov.au/wp-content/uploads/2014/02/Patagonian-toothfish-stock-assesment-with-TAC-rec-for-2015-16-and-2016-17-fishing-years.pdf
+
+\subsection{Stock Recruitment Relationships} 
+
+
+$r = \frac{aS}{b + ssb}$ \citep{beverton1956review}
+
+$r = aSe^{-bS}$ \citep{ricker_stock_1954}
+
+$r=aS^b$ \citep{cushing1973dependence}
+
+
+Stock recruitment relationships are needed to formulate management advice, e.g. when estimating reference points such as MSY and $F_{crash}$ and making stock projections. 
+Often stock recruitment relationships are reparameterised in terms of steepness and virgin biomass, where steepness  
+is the ratio of recruitment at 40\% of virgin biomass to recruitment at virgin biomass. However, steepness is difficult to estimate from  
+stock assessment data sets: there is often insufficient range in biomass levels to allow the estimation of steepness. 
+ 
+We use a Beverton and Holt stock recruitment relationship reformulated in terms of steepness ($h$), virgin biomass ($v$) and $S/R_{F=0}$. 
+ 
+Where steepness is the proportion of the expected recruitment produced at 20\% of virgin biomass relative to virgin recruitment $(R_0)$. For the Beverton \& Holt  
+stock-recruit formulation, this equals 
+ 
+\begin{equation} 
+R=\frac{0.8 \times R_0 \times h \times S}{0.2 \times S/R_{F=0} \times R_0(1-h)+(h-0.2)S} 
+\end{equation}  
+
+
+\subsection{Equilibrium Dynamics}\label{eql}
+
+The SSB-per-recruit ($S/R$) is then given by 
+ 
+\begin{equation} 
+S/R=\sum\limits_{a=r}^{n-1} {e^{\sum\limits_{i=r}^{a-1} {-F_i-M_i}}} W_a Q_a + e^{\sum\limits_{i=r}^{n-1} {-F_n-M_n}} \frac{W_n Q_n}{1-e_{-F_n-M_n}}\\ 
+\end{equation}  
+ 
+where $a$ is age, $n$ is the oldest age, and $r$ the age at recruitment. The second term is the plus-group (i.e. the summation of all ages from the  
+last age to infinity).  
+ 
+Similarly for yield per recruit ($Y/R$) 
+ 
+\begin{equation} 
+Y/R=\sum\limits_{a=r}^{n-1} {e^{\sum\limits_{i=r}^{a-1} {-F_i-M_i}}} W_a\frac{F_a}{F_a+M_a}\left(1-e^{-F_i-M_i} \right) + e^{\sum\limits_{i=r}^{n-1} {-F_n-M_n}} W_n\frac{F_n}{F_n+M_n}\\ 
+\end{equation}  
+ 
+The stock recruitment relationship can then be reparameterised so that recruitment $R$ is a function of $S/R$ 
+ 
+e.g. for a \citet{beverton1956review}  
+ 
+\begin{equation} 
+S/R=(b+S)/a 	 
+\end{equation}  
+ 
+$S$ can then be derived from F by combining equation 3 or 4 with equation 1.  
+ 
+Natural mortality ($M$) at-age can then be derived from the life history relationship \citet{gislason2008does}. 
+ 
+\begin{equation} 
+log(M) = a - b \times log(L_{\infty}) + c \times log(L) + d \times log(k) - \frac{e}{T} 
+\end{equation}  
+ 
+where $L$ is the average length of the fish (in cm) for which the M estimate applies. 
+ 
+\subsection{Leslie Matrices}
+
+
+The matrix of this linear system is 
+\begin{equation*}
+\mathbf{L}=%
+\begin{pmatrix}
+f_{1} & f_{2} & f_{3} \\ 
+P_{1} & 0 & 0 \\ 
+0 & P_{2} & 0%
+\end{pmatrix}%
+\end{equation*}
+
+and is called a \textit{Leslie} matrix, named after P.H. Leslie who
+published 1945 a paper "\textit{On the use of Matrices in Certain Population
+Mathematics", }Biometrika , Vol. 32., pp. 183-212.
+
+\section{Examples}\label{example}
+
+\subsection{Elasticity}\label{Elasticity}
+
+\subsection{Simulation}\label{Simulation}
+\begin{itemize}
+\tightlist
+  \item How to go from equilibrium to time series
+  \item How to recreate different historical data sets
+\end{itemize} 
+
+Summarise importance for feedback control of 
+\begin{itemize}
+\tightlist
+  \item DD
+  \item Resonant Cohort Effects
+  \item Frequency Domain
+\end{itemize}
+ 
+\clearpage
+\newpage
+\bibliography{ref.bib}  
+\bibliographystyle{apalike}
+
+\end{document}
